@@ -17,8 +17,9 @@ function renderTasks() {
 
   filteredTasks.forEach((task, index) => {
     const li = document.createElement('li');
+
     const span = document.createElement('span');
-    span.textContent = task.text;
+    span.textContent = `${task.text} (Due: ${task.dueDate || 'N/A'}, Priority: ${task.priority || 'low'})`;
     span.className = task.completed ? 'completed' : '';
     span.onclick = () => toggleComplete(index);
 
@@ -36,8 +37,13 @@ function renderTasks() {
   });
 }
 
-function addTask(text) {
-  tasks.push({ text, completed: false });
+function addTask(text, dueDate, priority) {
+  tasks.push({
+    text: text,
+    dueDate: dueDate,
+    priority: priority,
+    completed: false
+  });
   saveTasks();
   renderTasks();
 }
@@ -59,12 +65,17 @@ function filterTasks(type) {
   renderTasks();
 }
 
-document.getElementById('todo-form').addEventListener('submit', function(e) {
+document.getElementById('todo-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const input = document.getElementById('task-input');
+  const date = document.getElementById('due-date');
+  const priority = document.getElementById('priority');
+
   if (input.value.trim() !== '') {
-    addTask(input.value.trim());
+    addTask(input.value.trim(), date.value, priority.value);
     input.value = '';
+    date.value = '';
+    priority.value = 'low';
   }
 });
 
